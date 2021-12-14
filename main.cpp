@@ -49,45 +49,87 @@ int main() {
     bdd task = bddtrue;
 
     // ограничение 1:  Свойство m у объекта n = value
-    task &= limit_1(p, 0, 8, 4);
-    task &= limit_1(p, 0, 3, 1);
-    task &= limit_1(p, 0, 1, 5);
-    task &= limit_1(p, 2, 7, 3);
-    task &= limit_1(p, 0, 5, 2);
-    task &= limit_1(p, 0, 2, 6);
+
+    std::ifstream fin("../cond1.txt");
+    int n;
+    fin >> n;
+    for (int i = 0; i < n; ++i) {
+        int m, n, value;
+        fin >> m >> n >> value;
+        task &= limit_1(p, m, n, value);
+    }
+    fin.close();
+//    task &= limit_1(p, 0, 8, 4);
+//    task &= limit_1(p, 0, 3, 1);
+//    task &= limit_1(p, 0, 1, 5);..
+//    task &= limit_1(p, 2, 7, 3);.
+//    task &= limit_1(p, 0, 5, 2);
+//    task &= limit_1(p, 0, 2, 6);
 
     // ограничение 2
     // Если у объекта св-во m1 = value1, то св-во m2 = value2 и наоборот
-    task &= limit_2(p, 0, 2, 3, 2);
-    task &= limit_2(p, 2, 5, 0, 0);
-    task &= limit_2(p, 1, 0, 2, 4);
-    // Доп
-    task &= limit_2(p, 1, 6, 2, 6);
-    task &= limit_2(p, 2, 5, 1, 5);
-    task &= limit_2(p, 3, 8, 2, 7);
-    task &= limit_2(p, 0, 5, 1, 4);
-    task &= limit_2(p, 1, 3, 3, 7);
-    task &= limit_2(p, 0, 3, 2, 0);
-    task &= limit_2(p, 1, 2, 2, 3);
+    fin.open("../cond2.txt");
+    fin >> n;
+    for (int i = 0; i < n; ++i) {
+        int m1, value1, m2, value2;
+        fin >> m1 >> value1 >> m2 >> value2;
+        task &= limit_2(p, m1, value1, m2, value2);
+    }
+    fin.close();
+//    task &= limit_2(p, 0, 2, 3, 2);
+//    task &= limit_2(p, 2, 5, 0, 0);
+//    task &= limit_2(p, 1, 0, 2, 4);
+//    // Доп
+//    task &= limit_2(p, 1, 6, 2, 6);
+//    task &= limit_2(p, 2, 5, 1, 5);
+//    task &= limit_2(p, 3, 8, 2, 7);
+//    task &= limit_2(p, 0, 5, 1, 4);
+//    task &= limit_2(p, 1, 3, 3, 7);
+//    task &= limit_2(p, 0, 3, 2, 0);
+//    task &= limit_2(p, 1, 2, 2, 3);
 
     // ограничение 3
     // Позиция 2-го относительно 1-го
-    task &= limit_3(p, Neighbour::LEFT, 0, 6, 2, 1);
-    task &= limit_3(p, Neighbour::LEFT, 1, 4, 2, 2);
-    task &= limit_3(p, Neighbour::UPPERLEFT, 3, 6, 3, 8);
-    task &= limit_3(p, Neighbour::UPPERLEFT, 0, 2, 3, 3);
-    task &= limit_3(p, Neighbour::LEFT, 3, 6, 3, 5);
-    // Доп
-    task &= limit_3(p, Neighbour::UPPERLEFT, 2, 4, 3, 7);
+    fin.open("../cond3.txt");
+    fin >> n;
+    for (int i = 0; i < n; ++i) {
+        std::string neighbour;
+        int m1, value1, m2, value2;
+        fin >> neighbour >> m1 >> value1 >> m2 >> value2;
+        if (neighbour == "LEFT") {
+            task &= limit_3(p, Neighbour::LEFT, m1, value1, m2, value2);
+        } else if (neighbour == "UPPERLEFT") {
+            task &= limit_3(p, Neighbour::UPPERLEFT, m1, value1, m2, value2);
+        } else {
+            std::cout << "exception";
+            exit(-1);
+        }
+    }
+    fin.close();
+//    task &= limit_3(p, Neighbour::LEFT, 0, 6, 2, 1);
+//    task &= limit_3(p, Neighbour::LEFT, 1, 4, 2, 2);
+//    task &= limit_3(p, Neighbour::UPPERLEFT, 3, 6, 3, 8);
+//    task &= limit_3(p, Neighbour::UPPERLEFT, 0, 2, 3, 3);
+//    task &= limit_3(p, Neighbour::LEFT, 3, 6, 3, 5);
+//    // Доп
+//    task &= limit_3(p, Neighbour::UPPERLEFT, 2, 4, 3, 7);
 //    task &= limit_3(p, Neighbour::UPPERLEFT, 0, 4, 3, 7);
 //    task &= limit_3(p, Neighbour::UPPERLEFT, 3, 7, 3, 1);
 
     // ограничение 4
     // Если у объекта свойство m1 имеет значение value, то он располагается слева-сверху или слева от объекта, у которого св-во m2 = value2
-    task &= limit_4(p, 1, 8, 1, 4);
-    task &= limit_4(p, 2, 3, 3, 5);
-    task &= limit_4(p, 3, 4, 0, 7); // по склейке
-    task &= limit_4(p, 2, 0, 3, 1);
+    fin.open("../cond4.txt");
+    fin >> n;
+    for (int i = 0; i < n; ++i) {
+        int m1, value1, m2, value2;
+        fin >> m1 >> value1 >> m2 >> value2;
+        task &= limit_4(p, m1, value1, m2, value2);
+    }
+    fin.close();
+//    task &= limit_4(p, 1, 8, 1, 4);
+//    task &= limit_4(p, 2, 3, 3, 5);
+//    task &= limit_4(p, 3, 4, 0, 7); // по склейке
+//    task &= limit_4(p, 2, 0, 3, 1);
 
     // ограничение 5
     // У двух различных параметров значения свойств не совпадают
@@ -208,17 +250,65 @@ limit_3(const bdd p[M][N][N], const Neighbour neighbour, int m1, int value1, int
     bdd tree = bddtrue;
     switch (neighbour) {
         case Neighbour::UPPERLEFT: {
-            for (int i = ROW_LENGTH + 1; i < N; ++i) {
-                if (i % ROW_LENGTH != 0) {
-                    tree &= (!p[m1][i][value1] ^ p[m2][i - ROW_LENGTH - 1][value2]);
+            for (int i = 0; i < N; ++i) {
+                int c = -1;
+                switch (i) {
+                    case 0:
+                    case 1:
+                    case 3:
+                    case 6:
+                        break;
+                    case 2:
+                        c = 7;
+                        break;
+                    case 4:
+                        c = 0;
+                        break;
+                    case 5:
+                        c = 1;
+                        break;
+                    case 7:
+                        c = 3;
+                        break;
+                    case 8:
+                        c = 4;
+                        break;
+                }
+                if (c!= -1) {
+                    tree &= !(p[m1][i][value1] ^ p[m2][c][value2]);
                 }
             }
             break;
         }
         case Neighbour::LEFT: {
-            for (int i = 1; i < N; ++i) {
-                if (i % ROW_LENGTH != 0) {
-                    tree &= (!p[m1][i][value1] ^ p[m2][i - 1][value2]);
+            for (int i = 0; i < N; ++i) {
+                int c = -1;
+                switch (i) {
+                    case 0:
+                    case 3:
+                    case 6:
+                        break;
+                    case 1:
+                        c = 0;
+                        break;
+                    case 2:
+                        c = 1;
+                        break;
+                    case 4:
+                        c = 3;
+                        break;
+                    case 5:
+                        c = 4;
+                        break;
+                    case 7:
+                        c = 6;
+                        break;
+                    case 8:
+                        c = 7;
+                        break;
+                }
+                if (c != -1) {
+                    tree &= !(p[m1][i][value1] ^ p[m2][c][value2]);
                 }
             }
             break;
