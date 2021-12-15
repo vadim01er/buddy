@@ -218,16 +218,23 @@ void fun(char *varset, int size)  //Для bdd_allsat
 }
 
 void init(bdd p[M][N][N]) {
-    for (int i = 0; i < M; ++i) {
-        for (int j = 0; j < N; ++j) {
-            for (int k = 0; k < N; ++k) {
-                p[i][j][k] = bddtrue;
-                for (int l = 0; l < LOG_N; ++l) {
-                    p[i][j][k] &= ((k >> l) & 1) ? bdd_ithvar((j * LOG_N * M) + l + LOG_N * i)
-                                                 : bdd_nithvar((j * LOG_N * M) + l + LOG_N * i);
-                }
-            }
+    unsigned I = 0;
+    for (unsigned i = 0; i < N; i++) {
+        for (unsigned j = 0; j < N; j++) {
+            p[0][i][j] = bddtrue;
+            for (unsigned k = 0; k < LOG_N; k++)
+                p[0][i][j] &= ((j >> k) & 1) ? bdd_ithvar(I + k) : bdd_nithvar(I + k);
+            p[1][i][j] = bddtrue;
+            for (unsigned k = 0; k < LOG_N; k++)
+                p[1][i][j] &= ((j >> k) & 1) ? bdd_ithvar(I + LOG_N + k) : bdd_nithvar(I + LOG_N + k);
+            p[2][i][j] = bddtrue;
+            for (unsigned k = 0; k < LOG_N; k++)
+                p[2][i][j] &= ((j >> k) & 1) ? bdd_ithvar(I + LOG_N * 2 + k) : bdd_nithvar(I + LOG_N * 2 + k);
+            p[3][i][j] = bddtrue;
+            for (unsigned k = 0; k < LOG_N; k++)
+                p[3][i][j] &= ((j >> k) & 1) ? bdd_ithvar(I + LOG_N * 3 + k) : bdd_nithvar(I + LOG_N * 3 + k);
         }
+        I += LOG_N * M;
     }
 }
 
